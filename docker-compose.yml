@@ -1,0 +1,42 @@
+version: '2'
+
+services:
+  zookeeper:
+    image: wurstmeister/zookeeper:latest
+    ports:
+      - "2181:2181"
+  kafka:
+    image: wurstmeister/kafka:0.9.0.0
+    ports:
+      - "9092:9092"
+    depends_on:
+      - zookeeper
+    links:
+      - zookeeper:zk
+    environment:
+      KAFKA_ADVERTISED_HOST_NAME: kafka
+      KAFKA_ADVERTISED_PORT: "9092"
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_CREATE_TOPICS: "kafka_docker_topic:1:1"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+  example-producer:
+    image: example-producer
+    ports:
+      - "8080:8080"
+    tty: true
+    links:
+      - kafka:kafka
+    depends_on:
+      - kafka
+    command: bash -c "/app/docker-scripts/wait-for-it.sh zk:2181 -t 90 &&  /app/docker-scripts/wait-for-it.sh kafka:9092 -t 90"
+  example-consumer:
+    image: example-consumer
+    ports:
+      - "8081:8081"
+    tty: true
+    links:
+      - kafka:kafka
+    depends_on:
+      - kafka
+    command: bash -c "/app/docker-scripts/wait-for-it.sh zk:2181 -t 90 &&  /app/docker-scripts/wait-for-it.sh kafka:9092 -t 90"
