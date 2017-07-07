@@ -6,7 +6,7 @@ version := "1.0"
 
 scalaVersion := "2.11.8"
 
-val dockerSettings = Seq(
+def dockerSettings(debugPort: Option[Int]= None) = Seq(
   assemblyMergeStrategy in assembly := {
     case r if r.startsWith("reference.conf") => MergeStrategy.concat
     case PathList("META-INF", m) if m.equalsIgnoreCase("MANIFEST.MF") => MergeStrategy.discard
@@ -21,7 +21,10 @@ val dockerSettings = Seq(
     new Dockerfile {
       from("java")
       add(artifact, artifactTargetPath)
-      entryPoint("java", "-jar", artifactTargetPath)
+      debugPort match {
+        case Some(port) => entryPoint("java", "-jar","-Xdebug", s"-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=$port", artifactTargetPath)
+        case None => entryPoint("java", "-jar","-Xdebug", artifactTargetPath)
+      }
     }
   },
   imageNames in docker := Seq(
@@ -43,20 +46,20 @@ lazy val exampleProducer = (project in file("producer"))
   .settings(
     libraryDependencies += "org.apache.kafka" % "kafka_2.11" % "0.10.0.0",
     libraryDependencies += "io.monix" %% "monix-execution" % "2.3.0",
-    dockerSettings
+    dockerSettings()
   )
 
 lazy val exampleConsumerNew = (project in file("consumerNew"))
   .enablePlugins(sbtdocker.DockerPlugin)
   .settings(
     libraryDependencies += "org.apache.kafka" % "kafka_2.11" % "0.10.0.0",
-    dockerSettings
+    dockerSettings()
   )
 
 lazy val exampleConsumerOld = (project in file("consumerOld"))
   .enablePlugins(sbtdocker.DockerPlugin)
   .settings(
     libraryDependencies += "org.apache.kafka" % "kafka_2.11" % "0.9.0.0",
-    dockerSettings
+    dockerSettings(Some(5005))
   )
 
