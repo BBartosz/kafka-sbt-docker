@@ -1,4 +1,4 @@
-name := "example-consumer"
+name := "example-consumer-new"
 
 version := "1.0"
 

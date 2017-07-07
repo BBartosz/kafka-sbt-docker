@@ -2,6 +2,7 @@
 /target
 /project/target
 /producer/source.iml
-/consumer/target
+/consumerOld/target
+/consumerNew/target
 /producer/target
 /project/project

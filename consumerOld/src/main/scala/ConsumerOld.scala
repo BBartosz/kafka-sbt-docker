@@ -5,10 +5,10 @@ import org.apache.kafka.clients.consumer.{ConsumerConfig, KafkaConsumer}
 
 import scala.collection.JavaConversions._
 
-object Consumer extends App {
+object ConsumerOld extends App {
   var executor: ExecutorService = null
   val broker = "kafka:9092"
-  val groupId = "kafka_docker_group"
+  val groupId = "kafka_old_docker_group"
   val topic = "kafka_docker_topic"
 
   def shutdown() = {
@@ -37,7 +37,7 @@ object Consumer extends App {
         val records = consumer.poll(1000)
 
         for (record <- records) {
-          System.out.println("Received message: (" + record.value() + ") at offset " + record.offset())
+          System.out.println("KafkaAPI 0.9.0 consumer: Received message: (" + record.value() + ") at offset " + record.offset())
         }
       }
     }

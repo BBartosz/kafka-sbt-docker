@@ -41,12 +41,19 @@ val dockerSettings = Seq(
 lazy val exampleProducer = (project in file("producer"))
   .enablePlugins(sbtdocker.DockerPlugin)
   .settings(
-    libraryDependencies += "org.apache.kafka" % "kafka_2.11" % "0.9.0.0",
+    libraryDependencies += "org.apache.kafka" % "kafka_2.11" % "0.10.0.0",
     libraryDependencies += "io.monix" %% "monix-execution" % "2.3.0",
     dockerSettings
   )
 
-lazy val exampleConsumer = (project in file("consumer"))
+lazy val exampleConsumerNew = (project in file("consumerNew"))
+  .enablePlugins(sbtdocker.DockerPlugin)
+  .settings(
+    libraryDependencies += "org.apache.kafka" % "kafka_2.11" % "0.10.0.0",
+    dockerSettings
+  )
+
+lazy val exampleConsumerOld = (project in file("consumerOld"))
   .enablePlugins(sbtdocker.DockerPlugin)
   .settings(
     libraryDependencies += "org.apache.kafka" % "kafka_2.11" % "0.9.0.0",
