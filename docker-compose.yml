@@ -9,8 +9,8 @@ services:
     image: wurstmeister/kafka:0.10.0.0
     ports:
       - "9092:9092"
-    links:
-      - zookeeper:zk
+    depends_on:
+      - zookeeper
     environment:
       KAFKA_ADVERTISED_HOST_NAME: kafka
       KAFKA_ADVERTISED_PORT: "9092"
@@ -23,16 +23,16 @@ services:
     ports:
       - "8080:8080"
     tty: true
-    links:
-      - kafka:kafka
+    depends_on:
+      - kafka
     command: bash -c "/app/docker-scripts/wait-for-it.sh zk:2181 -t 90 &&  /app/docker-scripts/wait-for-it.sh kafka:9092 -t 90"
   example-consumer-new:
     image: example-consumer-new
     ports:
       - "8081:8081"
     tty: true
-    links:
-      - kafka:kafka
+    depends_on:
+      - kafka
     command: bash -c "/app/docker-scripts/wait-for-it.sh zk:2181 -t 90 &&  /app/docker-scripts/wait-for-it.sh kafka:9092 -t 90"
   example-consumer-old:
     image: example-consumer-old
@@ -40,6 +40,6 @@ services:
       - "8082:8082"
       - "5005:5005"
     tty: true
-    links:
-      - kafka:kafka
+    depends_on:
+      - kafka
     command: bash -c "/app/docker-scripts/wait-for-it.sh zk:2181 -t 90 &&  /app/docker-scripts/wait-for-it.sh kafka:9092 -t 90"
