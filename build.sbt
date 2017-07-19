@@ -26,7 +26,10 @@ def dockerSettings(debugPort: Option[Int] = None) = Seq(
       add(artifact, artifactTargetPath)
       copy(dockerResourcesDir, dockerResourcesTargetPath)
       entryPoint(s"/app/entrypoint.sh")
-      cmd(s"${name.value}", s"${version.value}")
+      debugPort match {
+        case Some(port) => cmd(s"${name.value}", s"${version.value}", s"$port")
+        case None => cmd(s"${name.value}", s"${version.value}")
+      }
     }
   },
   imageNames in docker := Seq(
