@@ -25,7 +25,6 @@ services:
     tty: true
     depends_on:
       - kafka
-    command: bash -c "/app/docker-scripts/wait-for-it.sh zk:2181 -t 90 &&  /app/docker-scripts/wait-for-it.sh kafka:9092 -t 90"
   example-consumer-new:
     image: example-consumer-new
     ports:
@@ -33,13 +32,10 @@ services:
     tty: true
     depends_on:
       - kafka
-    command: bash -c "/app/docker-scripts/wait-for-it.sh zk:2181 -t 90 &&  /app/docker-scripts/wait-for-it.sh kafka:9092 -t 90"
   example-consumer-old:
     image: example-consumer-old
     ports:
       - "8082:8082"
-      - "5005:5005"
     tty: true
     depends_on:
       - kafka
-    command: bash -c "/app/docker-scripts/wait-for-it.sh zk:2181 -t 90 &&  /app/docker-scripts/wait-for-it.sh kafka:9092 -t 90"
